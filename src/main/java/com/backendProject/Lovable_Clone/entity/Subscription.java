@@ -11,6 +11,7 @@ import java.time.Instant;
 public class Subscription {
 
     private Long id;
+
     private User user;
     private Plan plan;
 

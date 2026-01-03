@@ -4,6 +4,7 @@ import com.backendProject.Lovable_Clone.dto.project.ProjectRequest;
 import com.backendProject.Lovable_Clone.dto.project.ProjectResponse;
 import com.backendProject.Lovable_Clone.dto.project.ProjectSummaryResponse;
 import com.backendProject.Lovable_Clone.service.ProjectService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/projects")
 @RequiredArgsConstructor
 public class ProjectController {
 
@@ -20,7 +21,7 @@ public class ProjectController {
 
     @GetMapping
     public ResponseEntity<List<ProjectSummaryResponse>> getMyProjects(){
-        Long userId = 1L;
+        Long userId = 1L; //TODO: update later with real spring security
         return ResponseEntity.ok(projectService.getUserProjects(userId));
     }
 
@@ -31,13 +32,13 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjectResponse> createProject(@RequestBody ProjectRequest request){
+    public ResponseEntity<ProjectResponse> createProject(@RequestBody @Valid ProjectRequest request){
         Long userId = 1L;
         return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createProject(request,userId));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ProjectResponse> updateProject(@PathVariable Long id, @RequestBody ProjectRequest request){
+    public ResponseEntity<ProjectResponse> updateProject(@PathVariable Long id, @RequestBody @Valid ProjectRequest request){
         Long userId = 1L;
         return ResponseEntity.ok(projectService.updateProject(id, request, userId));
     }

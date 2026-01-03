@@ -1,0 +1,8 @@
+package com.backendProject.Lovable_Clone.error;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class BadRequestException extends RuntimeException{
+    private final String message;
+}

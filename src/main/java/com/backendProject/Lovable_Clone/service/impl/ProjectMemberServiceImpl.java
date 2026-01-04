@@ -34,17 +34,22 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     public List<MemberResponse> getProjectMembers(Long projectId, Long userId) {
         Project project = getAccessibleProjectById(projectId, userId);
 
-        List<MemberResponse> memberResponseList = new ArrayList<>();
-        memberResponseList.add(projectMemberMapper.toProjectMemberResponseFromOwner(project.getOwner())); //owner is also member of the project,so will add owner to the list
-
-        memberResponseList.addAll(
-        projectMemberRepository.findByProjectId(projectId)
-                .stream()
-                .map(projectMemberMapper::toProjectMemberResponseFromMember)
-                .toList());
+//        List<MemberResponse> memberResponseList = new ArrayList<>();
+//        memberResponseList.add(projectMemberMapper.toProjectMemberResponseFromOwner(project.getOwner())); //owner is also member of the project,so will add owner to the list
+//        List<MemberResponse> memberResponseList = new ArrayList<>();
+//        memberResponseList.addAll(
+//        projectMemberRepository.findByProjectId(projectId)
+//                .stream()
+//                .map(projectMemberMapper::toProjectMemberResponseFromMember)
+//                .toList());
 
 //        return List.of();
-        return memberResponseList;
+//        return memberResponseList;
+
+        return projectMemberRepository.findByProjectId(projectId)
+                        .stream()
+                        .map(projectMemberMapper::toProjectMemberResponseFromMember)
+                        .toList();
     }
 //  To see the members of the project-invite member
     @Override
@@ -53,11 +58,11 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         Project project = getAccessibleProjectById(projectId,userId);
 
 //  Project owner should invite other ---> Check project owner is actually this userId
-        if(!project.getOwner().getId().equals(userId)){
-            throw new RuntimeException("Not Allowed");
-        }
+//        if(!project.getOwner().getId().equals(userId)){
+//            throw new RuntimeException("Not Allowed");
+//        } //later will take care of this in authorization part
 //  Get the user via email
-        User invitee = userRepository.findByEmail(request.email()).orElseThrow();
+        User invitee = userRepository.findByUsername(request.username()).orElseThrow();
 //  check invitee is user or not; maybe owner is trying to invite himself
         if(invitee.getId().equals(userId)){
             throw new RuntimeException("You cannot invite yourself");
@@ -87,9 +92,9 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         Project project = getAccessibleProjectById(projectId,userId);
 
 // Only project owner can invite
-        if (!project.getOwner().getId().equals(userId)) {
-            throw new RuntimeException("Not authorized to invite members");
-        }
+//        if (!project.getOwner().getId().equals(userId)) {
+//            throw new RuntimeException("Not authorized to invite members");
+//        }
 
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId,memberId);
         ProjectMember projectMember = projectMemberRepository.findById(projectMemberId).orElseThrow();
@@ -107,9 +112,9 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         Project project = getAccessibleProjectById(projectId,userId);
 
 // Only project owner can invite
-        if (!project.getOwner().getId().equals(userId)) {
-            throw new RuntimeException("Not authorized to invite members");
-        }
+//        if (!project.getOwner().getId().equals(userId)) {
+//            throw new RuntimeException("Not authorized to invite members");
+//        }
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId,memberId);
 //  If this ProjectMember is already exists, they've already been invited to this project & they shouldn't be invited again
         if (!projectMemberRepository.existsById(projectMemberId)){
